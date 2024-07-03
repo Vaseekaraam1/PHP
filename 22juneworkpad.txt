@@ -1,0 +1,820 @@
+Microsoft Windows [Version 10.0.22631.3593]
+(c) Microsoft Corporation. All rights reserved.
+
+E:\Internship - CS>kubectl get ns
+NAME              STATUS   AGE
+default           Active   9d
+dev               Active   102s
+kube-node-lease   Active   9d
+kube-public       Active   9d
+kube-system       Active   9d
+mytest            Active   6m24s
+
+E:\Internship - CS>notepad pod-chennai.yaml
+
+E:\Internship - CS>kubectl apply -f pod-chennai.yaml
+pod/pod-chennai created
+
+E:\Internship - CS>notepad pod-banglore.yaml
+
+E:\Internship - CS>kubectl apply -f pod-banglore.yaml
+pod/pod-bangalore created
+
+E:\Internship - CS>kubectl get pods
+NAME      READY   STATUS             RESTARTS   AGE
+testpod   0/1     ImagePullBackOff   0          9d
+
+E:\Internship - CS>kubectl get pods --all-namespaces --show-labels
+NAMESPACE     NAME                               READY   STATUS             RESTARTS        AGE   LABELS
+default       testpod                            0/1     ImagePullBackOff   0               9d    run=testpod
+dev           pod-bangalore                      1/1     Running            0               36s   city=bangalore
+kube-system   coredns-7db6d8ff4d-6dqfr           1/1     Running            3 (35h ago)     9d    k8s-app=kube-dns,pod-template-hash=7db6d8ff4d
+kube-system   etcd-minikube                      1/1     Running            3 (35h ago)     9d    component=etcd,tier=control-plane
+kube-system   kube-apiserver-minikube            1/1     Running            3 (35h ago)     9d    component=kube-apiserver,tier=control-plane
+kube-system   kube-controller-manager-minikube   1/1     Running            3 (35h ago)     9d    component=kube-controller-manager,tier=control-plane
+kube-system   kube-proxy-6z4wd                   1/1     Running            3 (35h ago)     9d    controller-revision-hash=79cf874c65,k8s-app=kube-proxy,pod-template-generation=1
+kube-system   kube-scheduler-minikube            1/1     Running            3 (35h ago)     9d    component=kube-scheduler,tier=control-plane
+kube-system   storage-provisioner                1/1     Running            7 (8m57s ago)   9d    addonmanager.kubernetes.io/mode=Reconcile,integration-test=storage-provisioner
+mytest        pod-chennai                        1/1     Running            0               97s   city=chennai
+
+E:\Internship - CS>notepad chennai-resoursequota.yaml
+
+E:\Internship - CS>kubectl apply -f chennai-resoursequota.yaml
+resourcequota/chennai-resource-quota created
+
+E:\Internship - CS>kubectl describe resourcequota chennairesourcequota -n mytest
+Error from server (NotFound): resourcequotas "chennairesourcequota" not found
+
+E:\Internship - CS>kubectl describe resourcequota chennai-resourcequota -n mytest
+Error from server (NotFound): resourcequotas "chennai-resourcequota" not found
+
+E:\Internship - CS>kubectl describe resourcequota chennai-resource-quota -n mytest
+Name:            chennai-resource-quota
+Namespace:       mytest
+Resource         Used  Hard
+--------         ----  ----
+pods             1     5
+requests.cpu     0     1
+requests.memory  0     1Gi
+
+E:\Internship - CS>notepad banglore-resoursequota.yaml
+
+E:\Internship - CS>kubectl apply -f banglore-resoursequota.yaml
+resourcequota/banglore-resource-quota created
+
+E:\Internship - CS>kubectl describe resourcequota banglore-resource-quota -n mytest
+Error from server (NotFound): resourcequotas "banglore-resource-quota" not found
+
+E:\Internship - CS>kubectl describe resourcequota banglore-resource-quota -n dev
+Name:            banglore-resource-quota
+Namespace:       dev
+Resource         Used  Hard
+--------         ----  ----
+pods             1     5
+requests.cpu     0     1
+requests.memory  0     1Gi
+
+E:\Internship - CS>notepad limits.yaml
+
+E:\Internship - CS>kubectl apply -f limits.yaml
+The LimitRange "Chennai-limit-range" is invalid: metadata.name: Invalid value: "Chennai-limit-range": a lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
+
+E:\Internship - CS>kubectl apply -f limits.yaml
+limitrange/chennai-limit-range created
+
+E:\Internship - CS>notepad blimits.yaml
+
+E:\Internship - CS>kubectl apply -f blimits.yaml
+limitrange/banglore-limit-range created
+
+E:\Internship - CS>kubectl describe limitrange chennai-limit-range -n -mytest
+Error from server (NotFound): namespaces "-mytest" not found
+
+E:\Internship - CS>kubectl describe limitrange chennai-limit-range -n mytest
+Name:       chennai-limit-range
+Namespace:  mytest
+Type        Resource  Min  Max   Default Request  Default Limit  Max Limit/Request Ratio
+----        --------  ---  ---   ---------------  -------------  -----------------------
+Container   cpu       -    500m  100m             200m           -
+Container   memory    -    1Gi   256Mi            512Mi          -
+
+E:\Internship - CS>kubectl describe limitrange banglore-limit-range -n dev
+Name:       banglore-limit-range
+Namespace:  dev
+Type        Resource  Min  Max   Default Request  Default Limit  Max Limit/Request Ratio
+----        --------  ---  ---   ---------------  -------------  -----------------------
+Container   cpu       -    500m  100m             200m           -
+Container   memory    -    1Gi   256Mi            512Mi          -
+
+E:\Internship - CS>kubectl pods
+error: unknown command "pods" for "kubectl"
+
+Did you mean this?
+        logs
+
+E:\Internship - CS>kubectl get pods
+NAME      READY   STATUS             RESTARTS   AGE
+testpod   0/1     ImagePullBackOff   0          9d
+
+E:\Internship - CS>kubectl get pods --all-namespaces --show-labels
+NAMESPACE     NAME                               READY   STATUS             RESTARTS      AGE   LABELS
+default       testpod                            0/1     ImagePullBackOff   0             9d    run=testpod
+dev           pod-bangalore                      1/1     Running            0             51m   city=bangalore
+kube-system   coredns-7db6d8ff4d-6dqfr           1/1     Running            3 (36h ago)   9d    k8s-app=kube-dns,pod-template-hash=7db6d8ff4d
+kube-system   etcd-minikube                      1/1     Running            3 (36h ago)   9d    component=etcd,tier=control-plane
+kube-system   kube-apiserver-minikube            1/1     Running            3 (36h ago)   9d    component=kube-apiserver,tier=control-plane
+kube-system   kube-controller-manager-minikube   1/1     Running            3 (36h ago)   9d    component=kube-controller-manager,tier=control-plane
+kube-system   kube-proxy-6z4wd                   1/1     Running            3 (36h ago)   9d    controller-revision-hash=79cf874c65,k8s-app=kube-proxy,pod-template-generation=1
+kube-system   kube-scheduler-minikube            1/1     Running            3 (36h ago)   9d    component=kube-scheduler,tier=control-plane
+kube-system   storage-provisioner                1/1     Running            7 (59m ago)   9d    addonmanager.kubernetes.io/mode=Reconcile,integration-test=storage-provisioner
+mytest        pod-chennai                        1/1     Running            0             52m   city=chennai
+
+E:\Internship - CS>kubectl get pod pod-chennai -n mytest -o yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"city":"chennai"},"name":"pod-chennai","namespace":"mytest"},"spec":{"containers":[{"image":"nginx:latest","name":"nginx","ports":[{"containerPort":94}]}]}}
+  creationTimestamp: "2024-06-22T07:10:20Z"
+  labels:
+    city: chennai
+  name: pod-chennai
+  namespace: mytest
+  resourceVersion: "16752"
+  uid: 89550f68-e9d5-40dd-b493-8bcf3ce9164a
+spec:
+  containers:
+  - image: nginx:latest
+    imagePullPolicy: Always
+    name: nginx
+    ports:
+    - containerPort: 94
+      protocol: TCP
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-7d9bp
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: minikube
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-7d9bp
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:36Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:20Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:36Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:36Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:20Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://f04dcb9447362b2cc8439b2a26b367b93b045d52afd1fc10bb50240a9a2cb8d2
+    image: nginx:latest
+    imageID: docker-pullable://nginx@sha256:9c367186df9a6b18c6735357b8eb7f407347e84aea09beb184961cb83543d46e
+    lastState: {}
+    name: nginx
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2024-06-22T07:10:36Z"
+  hostIP: 192.168.49.2
+  hostIPs:
+  - ip: 192.168.49.2
+  phase: Running
+  podIP: 10.244.0.10
+  podIPs:
+  - ip: 10.244.0.10
+  qosClass: BestEffort
+  startTime: "2024-06-22T07:10:20Z"
+
+E:\Internship - CS>notepad chennai-networkpolicy
+
+E:\Internship - CS>kubectl apply -f network-policy.yaml
+error: the path "network-policy.yaml" does not exist
+
+E:\Internship - CS>kubectl apply -f chennai-networkpolicy.yaml
+error: the path "chennai-networkpolicy.yaml" does not exist
+
+E:\Internship - CS>notepad chennai-networkpolicy.yaml
+
+E:\Internship - CS>kubectl apply -f chennai-networkpolicy.yaml
+networkpolicy.networking.k8s.io/allow-from-bangalore-to-chennai created
+
+E:\Internship - CS>notepad banglore-networkpolicy
+
+E:\Internship - CS>notepad banglore-networkpolicy.yaml
+
+E:\Internship - CS>kubectl apply -f banglore-networkpolicy.yaml
+networkpolicy.networking.k8s.io/allow-from-chennai-to-bangalore created
+
+E:\Internship - CS>kubectl describe networkpolicy allow-from-bangalore-to-chennai -n mytest
+Name:         allow-from-bangalore-to-chennai
+Namespace:    mytest
+Created on:   2024-06-22 13:47:39 +0530 IST
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     city=chennai
+  Allowing ingress traffic:
+    To Port: <any> (traffic allowed to all ports)
+    From:
+      PodSelector: city=bangalore
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+E:\Internship - CS>kubectl get po -n dev
+NAME            READY   STATUS    RESTARTS   AGE
+pod-bangalore   1/1     Running   0          71m
+
+E:\Internship - CS>kubectl get po -n mytest
+NAME          READY   STATUS    RESTARTS   AGE
+pod-chennai   1/1     Running   0          72m
+
+E:\Internship - CS>kubectl describe networkpolicy allow-from-bangalore-to-chennai -n mytest
+Name:         allow-from-bangalore-to-chennai
+Namespace:    mytest
+Created on:   2024-06-22 13:47:39 +0530 IST
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     city=chennai
+  Allowing ingress traffic:
+    To Port: <any> (traffic allowed to all ports)
+    From:
+      PodSelector: city=bangalore
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+E:\Internship - CS>kubectl describe networkpolicy allow-from-chennai-to-banglore -n dev
+Error from server (NotFound): networkpolicies.networking.k8s.io "allow-from-chennai-to-banglore" not found
+
+E:\Internship - CS>kubectl describe networkpolicy allow-from-chennai-to-banglaore -n dev
+Error from server (NotFound): networkpolicies.networking.k8s.io "allow-from-chennai-to-banglaore" not found
+
+E:\Internship - CS>kubectl describe networkpolicy allow-from-chennai-to-bangalore -n dev
+Name:         allow-from-chennai-to-bangalore
+Namespace:    dev
+Created on:   2024-06-22 13:49:26 +0530 IST
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     city=bangalore
+  Allowing ingress traffic:
+    To Port: <any> (traffic allowed to all ports)
+    From:
+      PodSelector: city=chennai
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+E:\Internship - CS>kubectl get po -n dev
+NAME            READY   STATUS    RESTARTS   AGE
+pod-bangalore   1/1     Running   0          73m
+
+E:\Internship - CS>kubectl get po -n mytest
+NAME          READY   STATUS    RESTARTS   AGE
+pod-chennai   1/1     Running   0          74m
+
+E:\Internship - CS>kubectl describe networkpolicy allow-from-chennai-to-bangalore -n dev
+Name:         allow-from-chennai-to-bangalore
+Namespace:    dev
+Created on:   2024-06-22 13:49:26 +0530 IST
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     city=bangalore
+  Allowing ingress traffic:
+    To Port: <any> (traffic allowed to all ports)
+    From:
+      PodSelector: city=chennai
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+E:\Internship - CS>kubectl describe networkpolicy allow-from-bangalore-to-chennai -n mytest
+Name:         allow-from-bangalore-to-chennai
+Namespace:    mytest
+Created on:   2024-06-22 13:47:39 +0530 IST
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     city=chennai
+  Allowing ingress traffic:
+    To Port: <any> (traffic allowed to all ports)
+    From:
+      PodSelector: city=bangalore
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+E:\Internship - CS>kubectl get pod pod-bangalore -n dev -o wide
+NAME            READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+pod-bangalore   1/1     Running   0          78m   10.244.0.11   minikube   <none>           <none>
+
+E:\Internship - CS>kubectl get pod pod-chennai -n mytest -o wide
+NAME          READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+pod-chennai   1/1     Running   0          80m   10.244.0.10   minikube   <none>           <none>
+
+E:\Internship - CS>kubectl get pod pod-bangalore -n mytest -o yaml
+Error from server (NotFound): pods "pod-bangalore" not found
+
+E:\Internship - CS>kubectl get pod pod-bangalore -n dev -o yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"city":"bangalore"},"name":"pod-bangalore","namespace":"dev"},"spec":{"containers":[{"image":"nginx:latest","name":"nginx","ports":[{"containerPort":95}]}]}}
+  creationTimestamp: "2024-06-22T07:11:21Z"
+  labels:
+    city: bangalore
+  name: pod-bangalore
+  namespace: dev
+  resourceVersion: "16799"
+  uid: 37681bc3-11fd-4796-b7be-69e29b976504
+spec:
+  containers:
+  - image: nginx:latest
+    imagePullPolicy: Always
+    name: nginx
+    ports:
+    - containerPort: 95
+      protocol: TCP
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-26zgs
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: minikube
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-26zgs
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:11:25Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:11:21Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:11:25Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:11:25Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:11:21Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://41230a2fdbf73be2b827a1ede349d413869c51421dc86493b02264c749873427
+    image: nginx:latest
+    imageID: docker-pullable://nginx@sha256:9c367186df9a6b18c6735357b8eb7f407347e84aea09beb184961cb83543d46e
+    lastState: {}
+    name: nginx
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2024-06-22T07:11:25Z"
+  hostIP: 192.168.49.2
+  hostIPs:
+  - ip: 192.168.49.2
+  phase: Running
+  podIP: 10.244.0.11
+  podIPs:
+  - ip: 10.244.0.11
+  qosClass: BestEffort
+  startTime: "2024-06-22T07:11:21Z"
+
+E:\Internship - CS>kubectl exec -it pod-chennai -n mytest --curl -s http://10.244.0.11:95
+error: unknown flag: --curl
+See 'kubectl exec --help' for usage.
+
+E:\Internship - CS>kubectl exec -it pod-chennai -n mytest -- sh
+# apk update
+sh: 1: apk: not found
+# apt-get update
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8786 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [13.8 kB]
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [160 kB]
+Fetched 9214 kB in 2s (3770 kB/s)
+Reading package lists... Done
+# apt-get install curl
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+curl is already the newest version (7.88.1-10+deb12u5).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+# curl --version
+curl 7.88.1 (x86_64-pc-linux-gnu) libcurl/7.88.1 OpenSSL/3.0.11 zlib/1.2.13 brotli/1.0.9 zstd/1.5.4 libidn2/2.3.3 libpsl/0.21.2 (+libidn2/2.3.3) libssh2/1.10.0 nghttp2/1.52.0 librtmp/2.3 OpenLDAP/2.5.13
+Release-Date: 2023-02-20, security patched: 7.88.1-10+deb12u5
+Protocols: dict file ftp ftps gopher gophers http https imap imaps ldap ldaps mqtt pop3 pop3s rtmp rtsp scp sftp smb smbs smtp smtps telnet tftp
+Features: alt-svc AsynchDNS brotli GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM NTLM_WB PSL SPNEGO SSL threadsafe TLS-SRP UnixSockets zstd
+# exit
+
+E:\Internship - CS>kubectl exec -it pod-chennai -n mytest -- curl -s http://10.244.0.11:95
+command terminated with exit code 7
+
+E:\Internship - CS>kubectl exec -it pod-chennai -n mytest -- ping 10.244.0.11
+OCI runtime exec failed: exec failed: unable to start container process: exec: "ping": executable file not found in $PATH: unknown
+command terminated with exit code 126
+
+E:\Internship - CS>kubectl exec -it pod-chennai -n mytest -- sh
+# apt-get update
+apt-get install iputils-ping
+Hit:1 http://deb.debian.org/debian bookworm InRelease
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Hit:3 http://deb.debian.org/debian-security bookworm-security InRelease
+Fetched 55.4 kB in 0s (149 kB/s)
+Reading package lists... Done
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libcap2-bin libpam-cap
+The following NEW packages will be installed:
+  iputils-ping libcap2-bin libpam-cap
+0 upgraded, 3 newly installed, 0 to remove and 0 not upgraded.
+Need to get 96.2 kB of archives.
+After this operation, 311 kB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://deb.debian.org/debian bookworm/main amd64 libcap2-bin amd64 1:2.66-4 [34.7 kB]
+Get:2 http://deb.debian.org/debian bookworm/main amd64 iputils-ping amd64 3:20221126-1 [47.1 kB]
+Get:3 http://deb.debian.org/debian bookworm/main amd64 libpam-cap amd64 1:2.66-4 [14.5 kB]
+Fetched 96.2 kB in 0s (467 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package libcap2-bin.
+(Reading database ... 7582 files and directories currently installed.)
+Preparing to unpack .../libcap2-bin_1%3a2.66-4_amd64.deb ...
+Unpacking libcap2-bin (1:2.66-4) ...
+Selecting previously unselected package iputils-ping.
+Preparing to unpack .../iputils-ping_3%3a20221126-1_amd64.deb ...
+Unpacking iputils-ping (3:20221126-1) ...
+Selecting previously unselected package libpam-cap:amd64.
+Preparing to unpack .../libpam-cap_1%3a2.66-4_amd64.deb ...
+Unpacking libpam-cap:amd64 (1:2.66-4) ...
+Setting up libcap2-bin (1:2.66-4) ...
+Setting up libpam-cap:amd64 (1:2.66-4) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (No usable dialog-like program is installed, so the dialog based frontend cannot be used. at /usr/share/perl5/Debconf/FrontEnd/Dialog.pm line 78.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.36.0 /usr/local/share/perl/5.36.0 /usr/lib/x86_64-linux-gnu/perl5/5.36 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.36 /usr/share/perl/5.36 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 7.)
+debconf: falling back to frontend: Teletype
+Setting up iputils-ping (3:20221126-1) ...
+# exit
+
+E:\Internship - CS>kubectl exec -it pod-chennai -n mytest -- ping 10.244.0.11
+PING 10.244.0.11 (10.244.0.11) 56(84) bytes of data.
+64 bytes from 10.244.0.11: icmp_seq=1 ttl=64 time=0.760 ms
+64 bytes from 10.244.0.11: icmp_seq=2 ttl=64 time=0.087 ms
+64 bytes from 10.244.0.11: icmp_seq=3 ttl=64 time=0.135 ms
+64 bytes from 10.244.0.11: icmp_seq=4 ttl=64 time=0.069 ms
+64 bytes from 10.244.0.11: icmp_seq=5 ttl=64 time=0.066 ms
+^C
+--- 10.244.0.11 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4161ms
+rtt min/avg/max/mdev = 0.066/0.223/0.760/0.269 ms
+
+E:\Internship - CS>kubectl get po -n mytest
+NAME          READY   STATUS    RESTARTS   AGE
+pod-chennai   1/1     Running   0          89m
+
+E:\Internship - CS>kubectl get po -n dev
+NAME            READY   STATUS    RESTARTS   AGE
+pod-bangalore   1/1     Running   0          88m
+
+E:\Internship - CS>kubectl get pod pod-chennai -n mytest -o yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"city":"chennai"},"name":"pod-chennai","namespace":"mytest"},"spec":{"containers":[{"image":"nginx:latest","name":"nginx","ports":[{"containerPort":94}]}]}}
+  creationTimestamp: "2024-06-22T07:10:20Z"
+  labels:
+    city: chennai
+  name: pod-chennai
+  namespace: mytest
+  resourceVersion: "16752"
+  uid: 89550f68-e9d5-40dd-b493-8bcf3ce9164a
+spec:
+  containers:
+  - image: nginx:latest
+    imagePullPolicy: Always
+    name: nginx
+    ports:
+    - containerPort: 94
+      protocol: TCP
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-7d9bp
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: minikube
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-7d9bp
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:36Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:20Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:36Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:36Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2024-06-22T07:10:20Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://f04dcb9447362b2cc8439b2a26b367b93b045d52afd1fc10bb50240a9a2cb8d2
+    image: nginx:latest
+    imageID: docker-pullable://nginx@sha256:9c367186df9a6b18c6735357b8eb7f407347e84aea09beb184961cb83543d46e
+    lastState: {}
+    name: nginx
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2024-06-22T07:10:36Z"
+  hostIP: 192.168.49.2
+  hostIPs:
+  - ip: 192.168.49.2
+  phase: Running
+  podIP: 10.244.0.10
+  podIPs:
+  - ip: 10.244.0.10
+  qosClass: BestEffort
+  startTime: "2024-06-22T07:10:20Z"
+
+E:\Internship - CS>kubectl get po -n dev
+NAME            READY   STATUS    RESTARTS   AGE
+pod-bangalore   1/1     Running   0          88m
+
+E:\Internship - CS>kubectl get po -n mytest
+NAME          READY   STATUS    RESTARTS   AGE
+pod-chennai   1/1     Running   0          89m
+
+E:\Internship - CS>kubectl describe networkpolicy allow-from-bangalore-to-chennai -n mytest
+Name:         allow-from-bangalore-to-chennai
+Namespace:    mytest
+Created on:   2024-06-22 13:47:39 +0530 IST
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     city=chennai
+  Allowing ingress traffic:
+    To Port: <any> (traffic allowed to all ports)
+    From:
+      PodSelector: city=bangalore
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+E:\Internship - CS>kubectl describe networkpolicy allow-from-chennai-to-bangalore -n dev
+Name:         allow-from-chennai-to-bangalore
+Namespace:    dev
+Created on:   2024-06-22 13:49:26 +0530 IST
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     city=bangalore
+  Allowing ingress traffic:
+    To Port: <any> (traffic allowed to all ports)
+    From:
+      PodSelector: city=chennai
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+E:\Internship - CS>kubectl exec -it pod-chennai -n mytest -- ping 10.244.0.11
+PING 10.244.0.11 (10.244.0.11) 56(84) bytes of data.
+64 bytes from 10.244.0.11: icmp_seq=1 ttl=64 time=0.421 ms
+64 bytes from 10.244.0.11: icmp_seq=2 ttl=64 time=0.053 ms
+64 bytes from 10.244.0.11: icmp_seq=3 ttl=64 time=0.188 ms
+^C
+--- 10.244.0.11 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2042ms
+rtt min/avg/max/mdev = 0.053/0.220/0.421/0.152 ms
+
+E:\Internship - CS>kubectl exec -it pod-banglore -n mytest -- ping 10.244.0.10
+Error from server (NotFound): pods "pod-banglore" not found
+
+E:\Internship - CS>kubectl exec -it pod-bangalore -n mytest -- ping 10.244.0.10
+Error from server (NotFound): pods "pod-bangalore" not found
+
+E:\Internship - CS>kubectl exec -it pod-bangalore -n dev -- ping 10.244.0.10
+OCI runtime exec failed: exec failed: unable to start container process: exec: "ping": executable file not found in $PATH: unknown
+command terminated with exit code 126
+
+E:\Internship - CS>kubectl exec -it pod-bangalore -n dev --sh
+error: unknown flag: --sh
+See 'kubectl exec --help' for usage.
+
+E:\Internship - CS>kubectl exec -it pod-chennai -n mytest -- sh
+# exit
+
+E:\Internship - CS>kubectl exec -it pod-bangalore -n dev -- sh
+# apt-get update
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8786 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [13.8 kB]
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [160 kB]
+Fetched 9214 kB in 5s (1947 kB/s)
+Reading package lists... Done
+# apt-get install iputils-ping
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libcap2-bin libpam-cap
+The following NEW packages will be installed:
+  iputils-ping libcap2-bin libpam-cap
+0 upgraded, 3 newly installed, 0 to remove and 0 not upgraded.
+Need to get 96.2 kB of archives.
+After this operation, 311 kB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://deb.debian.org/debian bookworm/main amd64 libcap2-bin amd64 1:2.66-4 [34.7 kB]
+Get:2 http://deb.debian.org/debian bookworm/main amd64 iputils-ping amd64 3:20221126-1 [47.1 kB]
+Get:3 http://deb.debian.org/debian bookworm/main amd64 libpam-cap amd64 1:2.66-4 [14.5 kB]
+Fetched 96.2 kB in 0s (1098 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package libcap2-bin.
+(Reading database ... 7582 files and directories currently installed.)
+Preparing to unpack .../libcap2-bin_1%3a2.66-4_amd64.deb ...
+Unpacking libcap2-bin (1:2.66-4) ...
+Selecting previously unselected package iputils-ping.
+Preparing to unpack .../iputils-ping_3%3a20221126-1_amd64.deb ...
+Unpacking iputils-ping (3:20221126-1) ...
+Selecting previously unselected package libpam-cap:amd64.
+Preparing to unpack .../libpam-cap_1%3a2.66-4_amd64.deb ...
+Unpacking libpam-cap:amd64 (1:2.66-4) ...
+Setting up libcap2-bin (1:2.66-4) ...
+Setting up libpam-cap:amd64 (1:2.66-4) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (No usable dialog-like program is installed, so the dialog based frontend cannot be used. at /usr/share/perl5/Debconf/FrontEnd/Dialog.pm line 78.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.36.0 /usr/local/share/perl/5.36.0 /usr/lib/x86_64-linux-gnu/perl5/5.36 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.36 /usr/share/perl/5.36 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 7.)
+debconf: falling back to frontend: Teletype
+Setting up iputils-ping (3:20221126-1) ...
+# exit
+
+E:\Internship - CS>kubectl exec -it pod-bangalore -n dev -- ping 10.244.0.10
+PING 10.244.0.10 (10.244.0.10) 56(84) bytes of data.
+64 bytes from 10.244.0.10: icmp_seq=1 ttl=64 time=0.372 ms
+64 bytes from 10.244.0.10: icmp_seq=2 ttl=64 time=0.118 ms
+64 bytes from 10.244.0.10: icmp_seq=3 ttl=64 time=0.081 ms
+^C
+--- 10.244.0.10 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2042ms
+rtt min/avg/max/mdev = 0.081/0.190/0.372/0.129 ms
+
+E:\Internship - CS>kubectl get po -n mytest
